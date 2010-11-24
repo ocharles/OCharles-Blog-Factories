@@ -9,15 +9,16 @@ use Flight::Holiday;
 sub new_flight {
     my ($self, $data) = @_;
 
-    if (Flight::Cargo->understands($data)) {
-        return Flight::Cargo->new($data);
+    my @subclasses = qw(
+        Flight::Cargo
+        Flight::Holiday
+    );
+    for my $subclass (@subclasses) {
+        return $subclass->new($data)
+            if $subclass->understands($data);
     }
-    elsif (Flight::Holiday->understands($data)) {
-        return Flight::Holiday->new($data);
-    }
-    else {
-        die "I don't know how to create this type of Flight";
-    }
+
+    die "I don't know how to create this type of Flight";
 }
 
 1;
