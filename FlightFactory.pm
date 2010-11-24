@@ -3,19 +3,23 @@ package FlightFactory;
 use strict;
 use warnings;
 
-use Module::Pluggable search_path => 'Flight', sub_name => 'classes';
+use Module::PluginFinder;
 use Flight::Cargo;
 use Flight::Holiday;
+
+my $finder = Module::PluginFinder->new(
+    search_path => 'Flight',
+    filter => sub { 
+        my ($class, $data) = @_;
+        $class->understands($data)
+    }
+);
 
 sub new_flight {
     my ($self, $data) = @_;
 
-    for my $subclass ($self->classes) {
-        return $subclass->new($data)
-            if $subclass->understands($data);
-    }
-
-    die "I don't know how to create this type of Flight";
+    return $finder->construct($data, $data)
+        or die "I don't know how to create this type of Flight";
 }
 
 1;
