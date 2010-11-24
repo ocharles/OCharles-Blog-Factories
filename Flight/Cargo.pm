@@ -10,4 +10,9 @@ has 'cargo' => (
     isa => 'ArrayRef',
 );
 
+sub understands {
+    my ($class, $data) = @_;
+    return exists $data->{cargo};
+}
+
 1;

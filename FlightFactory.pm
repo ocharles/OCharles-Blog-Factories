@@ -9,10 +9,10 @@ use Flight::Holiday;
 sub new_flight {
     my ($self, $data) = @_;
 
-    if (exists $data->{cargo}) {
+    if (Flight::Cargo->understands($data)) {
         return Flight::Cargo->new($data);
     }
-    elsif (exists $data->{passengers}) {
+    elsif (Flight::Holiday->understands($data)) {
         return Flight::Holiday->new($data);
     }
     else {
